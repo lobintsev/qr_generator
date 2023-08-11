@@ -1,7 +1,6 @@
 const express = require('express');
 const QRCode = require('qrcode');
 const app = express();
-const port = process.env.PORT || 3000;
 
 const generateQRCode = async (data, options = {}) => {
   try {
@@ -51,6 +50,6 @@ app.get('/qr', async (req, res) => {
     }
   });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.listen( () => {
+  
 });
