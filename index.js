@@ -1,7 +1,7 @@
 const express = require('express');
 const QRCode = require('qrcode');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const generateQRCode = async (data, options = {}) => {
   try {
