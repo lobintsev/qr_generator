@@ -3,7 +3,7 @@ const cors = require('cors');
 const QRCode = require('qrcode');
 
 const app = express();
-app.use(cors()); 
+app.use(cors());
 
 const generateQRCode = async (data, options = {}) => {
   try {
@@ -20,39 +20,39 @@ const generateQRCode = async (data, options = {}) => {
 };
 
 app.get('/qr', async (req, res) => {
-    const data = req.query.data;
-    const type = req.query.type; // "png" or "svg"
-  
-    // Extract other options from the query parameters
-    const options = {
-      errorCorrectionLevel: req.query.errorCorrectionLevel || 'medium',
-      margin: parseInt(req.query.margin) || 4,
-      width: parseInt(req.query.width) || undefined,
-      color: {
-        dark: req.query.dark || '#000000',
-        light: req.query.light || '#ffffff',
-      },
-    };
-  
-    if (!data) {
-      return res.status(400).send('Missing data parameter');
-    }
-  
-    try {
-      const qrCodeData = await generateQRCode(data, { type, ...options });
-      if (type === 'png') {
-        res.type('image/png');
-        const base64Image = qrCodeData.split(';base64,').pop();
-        res.send(Buffer.from(base64Image, 'base64'));
-      } else {
-        res.type('image/svg+xml');
-        res.send(qrCodeData);
-      }
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
-  });
+  const data = req.query.data;
+  const type = req.query.type; // "png" or "svg"
 
-app.listen( () => {
-  
+  if (!data) {
+    return res.status(400).send('Missing data parameter');
+  }
+
+  const options = {
+    type,
+    errorCorrectionLevel: req.query.errorCorrectionLevel || 'medium',
+    margin: parseInt(req.query.margin) || 4,
+    width: parseInt(req.query.width) || undefined,
+    color: {
+      dark: req.query.dark || '#000000',
+      light: req.query.light || '#ffffff',
+    },
+  };
+
+  try {
+    const qrCodeData = await generateQRCode(data, options);
+
+    if (type === 'png') {
+      res.send({ src: qrCodeData }); // Send as base64 in JSON
+    } else {
+      res.type('image/svg+xml');
+      res.send(qrCodeData); // Send as SVG
+    }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
