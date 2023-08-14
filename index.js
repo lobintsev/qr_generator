@@ -42,7 +42,7 @@ app.get('/qr', async (req, res) => {
     const qrCodeData = await generateQRCode(data, options);
 
     if (type === 'png') {
-      res.send({ src: qrCodeData }); // Send as base64 in JSON
+      res.send(qrCodeData); // Send the base64 string directly
     } else {
       res.type('image/svg+xml');
       res.send(qrCodeData); // Send as SVG
