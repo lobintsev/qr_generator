@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const QRCode = require('qrcode');
+
 const app = express();
+app.use(cors()); 
 
 const generateQRCode = async (data, options = {}) => {
   try {
